@@ -114,7 +114,6 @@ public class Taschenrechner {
             throw new IllegalArgumentException("Es müssen mindestens zwei Zahlen zum Teilen angegeben werden.");
         }
 
-        int maxAfterDigit = getMaxAfterDigit(numbers);
         double quotient = 0.0;
         boolean first = true;
 
@@ -124,28 +123,24 @@ public class Taschenrechner {
                 throw new ArithmeticException("Teilen durch Null ist nicht erlaubt.");
             }
             int[] splitNum = split(num);
-            int num_vor = splitNum[0];
-            int num_nach = splitNum[1];
             int num_len = splitNum[2];
 
-            int divisor = num_vor * (int) Math.pow(10, num_len) + num_nach;
+            double divisor = num;
 
-            divisor *= (int) Math.pow(10, maxAfterDigit - num_len);
-            quotient *= (int) Math.pow(10, maxAfterDigit - num_len);
+
 
             if (first){
-                divisor /= (int) Math.pow(10, maxAfterDigit - num_len);
                 quotient = divisor;
                 first = false;
                 continue;
             }
             int[] quotient_list = split(quotient);
-            int quotient_len = quotient_list[2] - (maxAfterDigit - num_len);
+            int quotient_len = quotient_list[2];
 
-            if (quotient_len > 0) {
-                quotient *= Math.pow(10, quotient_len);
-                divisor *= (int) Math.pow(10, quotient_len);
-            }
+            int maxAfterDigit = Math.max(num_len, quotient_len);
+
+            quotient *=  (int) Math.pow(10, maxAfterDigit);
+            divisor *= (int) Math.pow(10, maxAfterDigit);
 
             quotient /= divisor;
         }
