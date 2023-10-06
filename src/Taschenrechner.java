@@ -1,6 +1,6 @@
 
 public class Taschenrechner {
-    public int[] split(double num) {
+    private int[] split(double num) {
         String str_floaz = Double.toString(num);
         int int_floaz1 = Integer.parseInt(str_floaz.substring(0, str_floaz.indexOf(".")));
         int int_floaz2 = Integer.parseInt(str_floaz.substring(str_floaz.indexOf(".") + 1));
@@ -14,11 +14,11 @@ public class Taschenrechner {
         }
         return totalLen;
     }
-    public double combine(int num_vor, int num_nach, int num_len) {
+    private double combine(int num_vor, int num_nach, int num_len) {
         return num_vor + (num_nach / Math.pow(10, num_len));
     }
 
-    public int getMaxAfterDigit (double... numbers){
+    private int getMaxAfterDigit (double... numbers){
         int maxAfterDigit = 0;
 
         for (double num : numbers){
@@ -30,7 +30,7 @@ public class Taschenrechner {
         return maxAfterDigit;
     }
 
-    public  String[] num_before(String term, String chara){
+    private  String[] num_before(String term, String chara){
         String str_num1_temp = "";
         int index = 0;
         for (int i = term.indexOf(chara) - 1; i > -1; i --){
@@ -59,7 +59,7 @@ public class Taschenrechner {
 
         return returner;
     }
-    public  String[] num_after(String term, String chara){
+    private  String[] num_after(String term, String chara){
         String str_num2 = "";
         int index = term.length() - 1;
         for (int i = term.indexOf(chara) + 1; i < term.length(); i ++){
@@ -84,7 +84,7 @@ public class Taschenrechner {
         return returner;
     }
 
-    public double addieren(double... numbers) {
+    private double addieren(double... numbers) {
         int sum_vor = 0;
         int sum_nach = 0;
 
@@ -105,7 +105,7 @@ public class Taschenrechner {
 
         return combine(sum_vor, sum_nach, maxAfterDigit);
     }
-    public double subtrahieren(double... numbers) {
+    private double subtrahieren(double... numbers) {
 
         int sum_vor = 0;
         int sum_nach = 0;
@@ -136,7 +136,7 @@ public class Taschenrechner {
         return combine(sum_vor, sum_nach, maxAfterDigit);
     }
 
-    public double multiplizieren(double... numbers) {
+    private double multiplizieren(double... numbers) {
         if (numbers.length == 0) {
             return 0.0;
         }
@@ -164,7 +164,7 @@ public class Taschenrechner {
         return product;
     }
 
-    public double dividieren(double... numbers) {
+    private double dividieren(double... numbers) {
         if (numbers.length == 0) {
             throw new IllegalArgumentException("Es müssen mindestens zwei Zahlen zum Teilen angegeben werden.");
         }
@@ -203,14 +203,14 @@ public class Taschenrechner {
         return quotient;
     }
 
-    public double potenzieren(double base, int exponent) {
+    private double potenzieren(double base, int exponent) {
         int[] base_split = split(base);
         int afterDigits = base_split[2] * exponent;
         double result =  Math.pow(base * Math.pow(10, base_split[2]), exponent);
         return result / Math.pow(10, afterDigits);
     }
 
-    public  double potenzieren_ungenau(double base, double exponent) {return Math.pow(base, exponent);}
+    private  double potenzieren_ungenau(double base, double exponent) {return Math.pow(base, exponent);}
 
     public String interpreter (String term){
 
