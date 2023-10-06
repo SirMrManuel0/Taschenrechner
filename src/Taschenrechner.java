@@ -220,7 +220,7 @@ public class Taschenrechner {
 
         if (term.contains("(")){
             if (term.contains(")")){
-                term = term.substring(0, term.indexOf("(")) + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")"))) + term.substring(term.lastIndexOf(")"));
+                term = term.substring(0, term.indexOf("(")) + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")"))) + term.substring(term.lastIndexOf(")") + 1);
             } else{
                 throw new ArithmeticException("Die Klammer muss geschlossen werden!");
             }
@@ -274,6 +274,26 @@ public class Taschenrechner {
             return interpreter(returner);
         }
 
+        if (term.contains("+") || term.contains("-")){
+            String Rechenzeichen = term.indexOf("+") > term.indexOf("-") ? "+" : "-";
+            String[] arr_num1 = num_before(term, Rechenzeichen);
+            String[] arr_num2 = num_after(term, Rechenzeichen);
+            double num1 = Double.parseDouble(arr_num1[0]);
+            double num2 = Double.parseDouble(arr_num2[0]);
+            double result = 0;
+            switch (Rechenzeichen) {
+                case "+" -> result = addieren(num1, num2);
+                case "-" -> result = subtrahieren(num1, num2);
+            }
+            String returner = String.valueOf(result);
+            if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
+                returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
+            }
+            if (!(Integer.parseInt(arr_num1[1]) == 0)){
+                returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
+            }
+            return interpreter(returner);
+        }
 
 
 
