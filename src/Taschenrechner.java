@@ -3,7 +3,14 @@ public class Taschenrechner {
     private int[] split(double num) {
         String str_floaz = Double.toString(num);
         int int_floaz1 = Integer.parseInt(str_floaz.substring(0, str_floaz.indexOf(".")));
-        int int_floaz2 = Integer.parseInt(str_floaz.substring(str_floaz.indexOf(".") + 1));
+        String str_floaz2 = str_floaz.substring(str_floaz.indexOf(".") + 1);
+        int int_floaz2 = 0;
+        if (str_floaz2.length() - 1 >= 12){
+            int_floaz2 = Integer.parseInt(str_floaz.substring(str_floaz.indexOf(".") + 1, 11));
+        } else {
+            int_floaz2 = Integer.parseInt(str_floaz.substring(str_floaz.indexOf(".") + 1));
+        }
+
         int original_len = str_floaz.substring(str_floaz.indexOf(".") + 1).length();
         return new int[]{int_floaz1, int_floaz2, original_len};
     }
