@@ -1,3 +1,4 @@
+
 public class Taschenrechner {
     public int[] split(double num) {
         String str_floaz = Double.toString(num);
@@ -27,6 +28,60 @@ public class Taschenrechner {
             }
         }
         return maxAfterDigit;
+    }
+
+    public  String[] num_before(String term, String chara){
+        String str_num1_temp = "";
+        int index = 0;
+        for (int i = term.indexOf(chara) - 1; i > -1; i --){
+            try{
+                char termChar = term.charAt(i);
+                String termStr = String.valueOf(termChar);
+                double temp = Double.parseDouble(termStr);
+                str_num1_temp += termStr;
+            } catch (NumberFormatException e){
+                char termChar = term.charAt(i);
+                String termStr = String.valueOf(termChar);
+                if (!(termChar == '.') && !(termChar == '-')){
+                    index = i;
+                    break;
+                }
+                str_num1_temp += termStr;
+            }
+        }
+        String str_num1 = "";
+        for (int i = str_num1_temp.length() - 1; i > -1; i --){
+            str_num1 +=  str_num1_temp.charAt(i);
+        }
+        String[] returner = new String[2];
+        returner[0] = str_num1;
+        returner[1] = String.valueOf(index);
+
+        return returner;
+    }
+    public  String[] num_after(String term, String chara){
+        String str_num2 = "";
+        int index = term.length() - 1;
+        for (int i = term.indexOf(chara) + 1; i < term.length(); i ++){
+            try{
+                char termChar = term.charAt(i);
+                String termStr = String.valueOf(termChar);
+                double temp = Double.parseDouble(termStr);
+                str_num2 += termStr;
+            } catch (NumberFormatException e){
+                char termChar = term.charAt(i);
+                String termStr = String.valueOf(termChar);
+                if (!(termChar == '.') && !(termChar == '-')){
+                    index = i;
+                    break;
+                }
+                str_num2 += termStr;
+            }
+        }
+        String[] returner = new String[2];
+        returner[0] = str_num2;
+        returner[1] = String.valueOf(index);
+        return returner;
     }
 
     public double addieren(double... numbers) {
@@ -146,6 +201,67 @@ public class Taschenrechner {
         }
 
         return quotient;
+    }
+
+    public double potenzieren(double base, int exponent) {
+        int[] base_split = split(base);
+        int afterDigits = base_split[2] * exponent;
+        double result =  Math.pow(base * Math.pow(10, base_split[2]), exponent);
+        return result / Math.pow(10, afterDigits);
+    }
+
+    public  double potenzieren_ungenau(double base, double exponent) {return Math.pow(base, exponent);}
+
+    public String interpreter (String term){
+
+        term = term.replace(" ","");
+        term = term.replace(",",".");
+        term = term.replace("\n","");
+
+        if (term.contains("(")){
+            if (term.contains(")")){
+                term = term.substring(0, term.indexOf("(")) + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")"))) + term.substring(term.lastIndexOf(")"));
+            } else{
+                throw new ArithmeticException("Die Klammer muss geschlossen werden!");
+            }
+        }
+        if (term.contains(")") && ! term.contains(")")){throw new ArithmeticException("Die Klammer muss geöffnet werden!");}
+
+        if (term.contains("^")){
+            String[] arr_num1 = num_before(term, "^");
+            String[] arr_num2 = num_after(term, "^");
+            double num1 = Double.parseDouble(arr_num1[0]);
+            int num2;
+            double num2_double;
+            double result;
+            try{
+                num2 = Integer.parseInt(arr_num2[0]);
+                result = potenzieren(num1, num2);
+            } catch (NumberFormatException e) {
+                num2_double = Double.parseDouble(arr_num2[0]);
+                result = potenzieren_ungenau(num1, num2_double);
+            }
+            String returner = String.valueOf(result);
+
+
+            if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
+                returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
+            }
+            if (!(Integer.parseInt(arr_num1[1]) == 0)){
+                returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
+            }
+            return interpreter(returner);
+        }
+
+        if (term.contains("*") || term.contains("/")){
+            
+        }
+
+
+
+
+
+        return term;
     }
 
 }
