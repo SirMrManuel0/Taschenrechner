@@ -78,6 +78,7 @@ public class Taschenrechner {
             } catch (NumberFormatException e){
                 char termChar = term.charAt(i);
                 String termStr = String.valueOf(termChar);
+
                 if (!(termChar == '.') && !(termChar == '-')){
                     index = i;
                     break;
@@ -88,6 +89,38 @@ public class Taschenrechner {
         String[] returner = new String[2];
         returner[0] = str_num2;
         returner[1] = String.valueOf(index);
+        return returner;
+    }
+
+    private String[] num_after_root(String term){
+        String chara = "^";
+        String str_num2 = "";
+        String root = "false";
+        int index = term.length() - 1;
+        for (int i = term.indexOf(chara) + 1; i < term.length(); i ++){
+            try{
+                char termChar = term.charAt(i);
+                String termStr = String.valueOf(termChar);
+                double temp = Double.parseDouble(termStr);
+                str_num2 += termStr;
+            } catch (NumberFormatException e){
+                char termChar = term.charAt(i);
+                String termStr = String.valueOf(termChar);
+
+                if (!(termChar == '.') && !(termChar == '-')){
+                    if (!(termChar == '\\')){
+                        index = i;
+                        break;
+                    }
+                    root = "true";
+                }
+                str_num2 += termStr;
+            }
+        }
+        String[] returner = new String[3];
+        returner[0] = str_num2;
+        returner[1] = String.valueOf(index);
+        returner[2] = root;
         return returner;
     }
 
@@ -216,6 +249,11 @@ public class Taschenrechner {
         double result =  Math.pow(base * Math.pow(10, base_split[2]), exponent);
         return result / Math.pow(10, afterDigits);
     }
+    private double wurzel(double base, String exponent) {
+        String[] arr_exp1 = num_before(exponent, "\\");
+        String[] arr_exp2 = num_after(exponent, "\\");
+        return Math.pow(base, Double.parseDouble(arr_exp1[0]) / Double.parseDouble(arr_exp2[0]));
+    }
 
     private  double potenzieren_ungenau(double base, double exponent) {return Math.pow(base, exponent);}
 
@@ -236,18 +274,24 @@ public class Taschenrechner {
 
         if (term.contains("^")){
             String[] arr_num1 = num_before(term, "^");
-            String[] arr_num2 = num_after(term, "^");
+            String[] arr_num2 = num_after_root(term);
             double num1 = Double.parseDouble(arr_num1[0]);
-            int num2;
-            double num2_double;
-            double result;
-            try{
-                num2 = Integer.parseInt(arr_num2[0]);
-                result = potenzieren(num1, num2);
-            } catch (NumberFormatException e) {
-                num2_double = Double.parseDouble(arr_num2[0]);
-                result = potenzieren_ungenau(num1, num2_double);
+            double result = 0.0;
+            if (Boolean.parseBoolean(arr_num2[2])){
+                result = wurzel(num1, arr_num2[0]);
+            } else{
+                int num2;
+                double num2_double;
+
+                try{
+                    num2 = Integer.parseInt(arr_num2[0]);
+                    result = potenzieren(num1, num2);
+                } catch (NumberFormatException e) {
+                    num2_double = Double.parseDouble(arr_num2[0]);
+                    result = potenzieren_ungenau(num1, num2_double);
+                }
             }
+
             String returner = String.valueOf(result);
 
 
