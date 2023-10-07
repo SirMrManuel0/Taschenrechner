@@ -190,7 +190,7 @@ public class Taschenrechner {
         double product = 1.0;
 
         for (double num : numbers) {
-            if (num == 0.0000000000000000000000000000000000) {
+            if (num == 0) {
                 return 0.0;
             }
 
@@ -324,11 +324,6 @@ public class Taschenrechner {
 
              */
 
-        }
-
-
-        if (term.equals("3+0.12775862068965518*-8.0")){
-            int halloSTOP = 23;
         }
 
         if (term.contains("(")){
