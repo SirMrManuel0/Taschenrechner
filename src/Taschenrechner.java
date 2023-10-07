@@ -1,3 +1,7 @@
+/*
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+ */
 
 public class Taschenrechner {
     private int[] split(double num) {
@@ -54,6 +58,10 @@ public class Taschenrechner {
                     break;
                 }
                 str_num1_temp += termStr;
+                if (termChar == '-'){
+                    index = i;
+                    break;
+                }
             }
         }
         String str_num1 = "";
@@ -78,8 +86,7 @@ public class Taschenrechner {
             } catch (NumberFormatException e){
                 char termChar = term.charAt(i);
                 String termStr = String.valueOf(termChar);
-
-                if (!(termChar == '.') && !(termChar == '-')){
+                if (!(termChar == '.') && !(termChar == '-' && str_num2.isEmpty())){
                     index = i;
                     break;
                 }
@@ -107,7 +114,7 @@ public class Taschenrechner {
                 char termChar = term.charAt(i);
                 String termStr = String.valueOf(termChar);
 
-                if (!(termChar == '.') && !(termChar == '-')){
+                if (!(termChar == '.') && !(termChar == '-' && str_num2.isEmpty())){
                     if (!(termChar == '\\')){
                         index = i;
                         break;
@@ -177,14 +184,13 @@ public class Taschenrechner {
     }
 
     private double multiplizieren(double... numbers) {
-        if (numbers.length == 0) {
-            return 0.0;
-        }
+        if (numbers.length == 0) {return 0.0;}
+        if (numbers.length == 1) {return numbers[0];}
 
         double product = 1.0;
 
         for (double num : numbers) {
-            if (num == 0.0) {
+            if (num == 0.0000000000000000000000000000000000) {
                 return 0.0;
             }
 
@@ -263,9 +269,96 @@ public class Taschenrechner {
         term = term.replace(",",".");
         term = term.replace("\n","");
 
+        if (term.contains("+-")){
+            int index = term.indexOf("+-");
+            term = term.substring(0, index) + "-" + term.substring(index + 2);
+        }
+        if (term.contains("--")){
+            int index = term.indexOf("--");
+            term = term.substring(0, index) + "+" + term.substring(index + 2);
+        }
+
+
+
+        if (term.contains("E")){
+            int index = term.indexOf("E");
+            String[] num_after = num_after(term, "E");
+            int index_num_after = Integer.parseInt(num_after[1]) + 1;
+
+            if (index_num_after < term.length()){
+                term = term.substring(0, index) + term.substring(index_num_after);
+            } else {
+                term = term.substring(0, index);
+            }
+
+
+            /*
+
+            String[] arr_num1 = num_before(term, "E");
+            String[] arr_num2 = num_after(term, "E");
+
+            double num1_double = Double.parseDouble(arr_num1[0]);
+            int num2 = Integer.parseInt(arr_num1[1]);
+
+            BigDecimal num1 = BigDecimal.valueOf(num1_double);
+
+            BigDecimal result;
+            if (num2 < 0){
+                num2 = num2 * -1;
+                BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
+                result = num1.divide(zehner, 10, RoundingMode.UP);
+            } else {
+                BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
+                result = num1.divide(zehner, 10, RoundingMode.UP);
+            }
+
+
+            String returner = String.valueOf(result);
+            if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
+                returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
+            }
+            if (!(Integer.parseInt(arr_num1[1]) == 0)){
+                returner = term.substring(0, Integer.parseInt(arr_num1[1])) + returner;
+            }
+            return interpreter(returner);
+
+             */
+
+        }
+
+
+        if (term.equals("3+0.12775862068965518*-8.0")){
+            int halloSTOP = 23;
+        }
+
         if (term.contains("(")){
             if (term.contains(")")){
-                term = term.substring(0, term.indexOf("(")) + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")"))) + term.substring(term.lastIndexOf(")") + 1);
+
+                boolean malVorKlammer = true;
+                char[] zeichenVorKlammer  = {'+', '-', '*', '/', '^', '(', '\\'};
+
+                if (term.indexOf("(") == 0){malVorKlammer = false;} else {
+                    for (char zeichen : zeichenVorKlammer){
+                        int indexOfChar = term.indexOf('(') - 1;
+
+                        if (term.charAt(indexOfChar) == zeichen) {
+                            malVorKlammer = false;
+                            break;
+                        }
+                    }
+                }
+
+
+                if (malVorKlammer){
+                    term = term.substring(0, term.indexOf("("))
+                            + "*" + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")")))
+                            + term.substring(term.lastIndexOf(")") + 1);
+                } else {
+                    term = term.substring(0, term.indexOf("("))
+                            + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")")))
+                            + term.substring(term.lastIndexOf(")") + 1);
+                }
+
             } else{
                 throw new ArithmeticException("Die Klammer muss geschlossen werden!");
             }
@@ -305,7 +398,14 @@ public class Taschenrechner {
         }
 
         if (term.contains("*") || term.contains("/")){
-            String Rechenzeichen = term.indexOf("*") > term.indexOf("/") ? "*" : "/";
+            String Rechenzeichen="";
+            if (term.contains("*") && term.contains("/")){
+                Rechenzeichen  = term.indexOf("*") < term.indexOf("/") ? "*" : "/";
+            } else if (term.contains("*")) {
+                Rechenzeichen = "*";
+            } else if (term.contains("/")) {
+                Rechenzeichen = "/";
+            }
             String[] arr_num1 = num_before(term, Rechenzeichen);
             String[] arr_num2 = num_after(term, Rechenzeichen);
             double num1 = Double.parseDouble(arr_num1[0]);
@@ -325,8 +425,15 @@ public class Taschenrechner {
             return interpreter(returner);
         }
 
-        if (term.contains("+") || term.contains("-")){
-            String Rechenzeichen = term.indexOf("+") > term.indexOf("-") ? "+" : "-";
+        if (term.contains("+") || (term.contains("-") && term.indexOf("-") > 0)){
+            String Rechenzeichen="";
+            if (term.contains("+") && term.contains("-")){
+                Rechenzeichen  = term.indexOf("+") < term.indexOf("-") ? "+" : "-";
+            } else if (term.contains("+")) {
+                Rechenzeichen = "+";
+            } else if (term.contains("-")) {
+                Rechenzeichen = "-";
+            }
             String[] arr_num1 = num_before(term, Rechenzeichen);
             String[] arr_num2 = num_after(term, Rechenzeichen);
             double num1 = Double.parseDouble(arr_num1[0]);
