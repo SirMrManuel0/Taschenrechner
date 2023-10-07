@@ -2,8 +2,15 @@
 einfacher Java Taschenrechner 11 Klasse Informatik Projekt
 
 
-/* Urheberrecht (c) SirMrManuel0
+Urheberrecht © SirMrManuel0
 
-Die Erlaubnis wird hiermit jedem erteilt, diesen Code für jeden Zweck zu verwenden, zu kopieren, zu modifizieren und zu verteilen, unter der Bedingung, dass das oben stehende Urheberrechtsvermerk und diese Erlaubnismeldung in allen Kopien oder Teilen des Codes beibehalten werden.
+Die Genehmigung wird hiermit erteilt, diesen Code für jeden Zweck zu kopieren, zu modifizieren, zu verbreiten und zu nutzen, vorausgesetzt, dass die folgenden Bedingungen erfüllt sind:
 
-DER CODE WIRD OHNE JEGLICHE AUSDRÜCKLICHE ODER IMPLIZIERTE GARANTIE ZUR VERFÜGUNG GESTELLT, EINSCHLIESSLICH DER GARANTIE ZUR VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK SOWIE JEGLICHER RECHTSVERLETZUNG. DER ERSTELLER DIESES CODES ÜBERNIMMT KEINERLEI HAFTUNG FÜR EVENTUELLE SCHÄDEN ODER PROBLEME, DIE DURCH DIE NUTZUNG DES CODES ENTSTEHEN KÖNNEN. */
+1. Jegliche Kopien oder Ableitungen dieses Codes müssen den obigen Urheberrechtsvermerk sowie diese Bedingungen unverändert beibehalten.
+
+2. Der Ersteller (Urheber) übernimmt keinerlei Haftung oder Verantwortung für jegliche Schäden oder Probleme, die durch die Verwendung dieses Codes entstehen. Die Nutzung erfolgt auf eigene Gefahr.
+
+Es wird ausdrücklich darauf hingewiesen, dass der Ersteller nicht für etwaige rechtliche Konsequenzen oder sonstige Haftbarkeit in Verbindung mit der Nutzung dieses Codes verantwortlich ist. Die Verwendung dieses Codes erfolgt in der Annahme, dass der Nutzer die Konsequenzen seiner Handlungen versteht und akzeptiert.
+
+
+
