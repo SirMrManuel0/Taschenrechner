@@ -18,6 +18,9 @@ public class Taschenrechner {
         }
 
         int original_len = str_floaz.substring(str_floaz.indexOf(".") + 1).length();
+        if (original_len == 1 && int_floaz2 == 0){
+            original_len = 0;
+        }
         return new int[]{int_floaz1, int_floaz2, original_len};
     }
     private int getTotalNumLen(double... numbers) {
@@ -222,7 +225,7 @@ public class Taschenrechner {
 
         for (double num : numbers) {
 
-            if (num == 0.0) {
+            if (num == 0.0 && !first) {
                 throw new ArithmeticException("Teilen durch Null ist nicht erlaubt.");
             }
             int[] splitNum = split(num);
@@ -255,7 +258,9 @@ public class Taschenrechner {
         int[] base_split = split(base);
         int afterDigits = base_split[2] * exponent;
         double result =  Math.pow(base * Math.pow(10, base_split[2]), exponent);
-        return result / Math.pow(10, afterDigits);
+        //result = Math.round(result);
+        result = result / Math.pow(10, afterDigits);
+        return result;
     }
     private double wurzel(double base, String exponent) {
         String[] arr_exp1 = num_before(exponent, "\\");
@@ -457,11 +462,11 @@ public class Taschenrechner {
             return term;
 
         } catch (NumberFormatException e) {
-            return "Error: Unerwartetes Zahlenformat.\n\n" + e.getMessage();
+            return "Error: Unerwartetes Zahlenformat.";
         } catch (ArithmeticException e) {
             return "Error: " + e.getMessage();
         } catch (Exception e) {
-            return "Error: Unerwarteter Fehler.\n\n" + e.getMessage();
+            return "Error: Unerwarteter Fehler.";
         }
     }
 
