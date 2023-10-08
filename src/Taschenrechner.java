@@ -266,194 +266,203 @@ public class Taschenrechner {
     private  double potenzieren_ungenau(double base, double exponent) {return Math.pow(base, exponent);}
 
     public String interpreter (String term){
+        try {
+            term = term.replace(" ", "");
+            term = term.replace(",", ".");
+            term = term.replace("\n", "");
 
-        term = term.replace(" ","");
-        term = term.replace(",",".");
-        term = term.replace("\n","");
-
-        if (term.contains("+-")){
-            int index = term.indexOf("+-");
-            term = term.substring(0, index) + "-" + term.substring(index + 2);
-        }
-        if (term.contains("--")){
-            int index = term.indexOf("--");
-            term = term.substring(0, index) + "+" + term.substring(index + 2);
-        }
-
-
-
-        if (term.contains("E")){
-            int index = term.indexOf("E");
-            String[] num_after = num_after(term, "E");
-            int index_num_after = Integer.parseInt(num_after[1]) + 1;
-
-            if (index_num_after < term.length()){
-                term = term.substring(0, index) + term.substring(index_num_after);
-            } else {
-                term = term.substring(0, index);
+            if (term.contains("+-")) {
+                int index = term.indexOf("+-");
+                term = term.substring(0, index) + "-" + term.substring(index + 2);
+            }
+            if (term.contains("--")) {
+                int index = term.indexOf("--");
+                term = term.substring(0, index) + "+" + term.substring(index + 2);
             }
 
 
-            /*
+            if (term.contains("E")) {
+                int index = term.indexOf("E");
+                String[] num_after = num_after(term, "E");
+                int index_num_after = Integer.parseInt(num_after[1]) + 1;
 
-            String[] arr_num1 = num_before(term, "E");
-            String[] arr_num2 = num_after(term, "E");
+                if (index_num_after < term.length()) {
+                    term = term.substring(0, index) + term.substring(index_num_after);
+                } else {
+                    term = term.substring(0, index);
+                }
 
-            double num1_double = Double.parseDouble(arr_num1[0]);
-            int num2 = Integer.parseInt(arr_num1[1]);
 
-            BigDecimal num1 = BigDecimal.valueOf(num1_double);
+                /*
 
-            BigDecimal result;
-            if (num2 < 0){
-                num2 = num2 * -1;
-                BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
-                result = num1.divide(zehner, 10, RoundingMode.UP);
-            } else {
-                BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
-                result = num1.divide(zehner, 10, RoundingMode.UP);
+                String[] arr_num1 = num_before(term, "E");
+                String[] arr_num2 = num_after(term, "E");
+
+                double num1_double = Double.parseDouble(arr_num1[0]);
+                int num2 = Integer.parseInt(arr_num1[1]);
+
+                BigDecimal num1 = BigDecimal.valueOf(num1_double);
+
+                BigDecimal result;
+                if (num2 < 0){
+                    num2 = num2 * -1;
+                    BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
+                    result = num1.divide(zehner, 10, RoundingMode.UP);
+                } else {
+                    BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
+                    result = num1.divide(zehner, 10, RoundingMode.UP);
+                }
+
+
+                String returner = String.valueOf(result);
+                if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
+                    returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
+                }
+                if (!(Integer.parseInt(arr_num1[1]) == 0)){
+                    returner = term.substring(0, Integer.parseInt(arr_num1[1])) + returner;
+                }
+                return interpreter(returner);
+
+                 */
+
             }
 
+            if (term.contains("(")) {
+                if (term.contains(")")) {
 
-            String returner = String.valueOf(result);
-            if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
-                returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
-            }
-            if (!(Integer.parseInt(arr_num1[1]) == 0)){
-                returner = term.substring(0, Integer.parseInt(arr_num1[1])) + returner;
-            }
-            return interpreter(returner);
+                    boolean malVorKlammer = true;
+                    char[] zeichenVorKlammer = {'+', '-', '*', '/', '^', '(', '\\'};
 
-             */
+                    if (term.indexOf("(") == 0) {
+                        malVorKlammer = false;
+                    } else {
+                        for (char zeichen : zeichenVorKlammer) {
+                            int indexOfChar = term.indexOf('(') - 1;
 
-        }
-
-        if (term.contains("(")){
-            if (term.contains(")")){
-
-                boolean malVorKlammer = true;
-                char[] zeichenVorKlammer  = {'+', '-', '*', '/', '^', '(', '\\'};
-
-                if (term.indexOf("(") == 0){malVorKlammer = false;} else {
-                    for (char zeichen : zeichenVorKlammer){
-                        int indexOfChar = term.indexOf('(') - 1;
-
-                        if (term.charAt(indexOfChar) == zeichen) {
-                            malVorKlammer = false;
-                            break;
+                            if (term.charAt(indexOfChar) == zeichen) {
+                                malVorKlammer = false;
+                                break;
+                            }
                         }
+                    }
+
+
+                    if (malVorKlammer) {
+                        term = term.substring(0, term.indexOf("("))
+                                + "*" + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")")))
+                                + term.substring(term.lastIndexOf(")") + 1);
+                    } else {
+                        term = term.substring(0, term.indexOf("("))
+                                + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")")))
+                                + term.substring(term.lastIndexOf(")") + 1);
+                    }
+
+                } else {
+                    throw new ArithmeticException("Die Klammer muss geschlossen werden!");
+                }
+            }
+            if (term.contains(")") && !term.contains(")")) {
+                throw new ArithmeticException("Die Klammer muss geöffnet werden!");
+            }
+
+            if (term.contains("^")) {
+                String[] arr_num1 = num_before(term, "^");
+                String[] arr_num2 = num_after_root(term);
+                double num1 = Double.parseDouble(arr_num1[0]);
+                double result = 0.0;
+                if (Boolean.parseBoolean(arr_num2[2])) {
+                    result = wurzel(num1, arr_num2[0]);
+                } else {
+                    int num2;
+                    double num2_double;
+
+                    try {
+                        num2 = Integer.parseInt(arr_num2[0]);
+                        result = potenzieren(num1, num2);
+                    } catch (NumberFormatException e) {
+                        num2_double = Double.parseDouble(arr_num2[0]);
+                        result = potenzieren_ungenau(num1, num2_double);
                     }
                 }
 
+                String returner = String.valueOf(result);
 
-                if (malVorKlammer){
-                    term = term.substring(0, term.indexOf("("))
-                            + "*" + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")")))
-                            + term.substring(term.lastIndexOf(")") + 1);
-                } else {
-                    term = term.substring(0, term.indexOf("("))
-                            + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")")))
-                            + term.substring(term.lastIndexOf(")") + 1);
+
+                if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())) {
+                    returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
                 }
-
-            } else{
-                throw new ArithmeticException("Die Klammer muss geschlossen werden!");
-            }
-        }
-        if (term.contains(")") && ! term.contains(")")){throw new ArithmeticException("Die Klammer muss geöffnet werden!");}
-
-        if (term.contains("^")){
-            String[] arr_num1 = num_before(term, "^");
-            String[] arr_num2 = num_after_root(term);
-            double num1 = Double.parseDouble(arr_num1[0]);
-            double result = 0.0;
-            if (Boolean.parseBoolean(arr_num2[2])){
-                result = wurzel(num1, arr_num2[0]);
-            } else{
-                int num2;
-                double num2_double;
-
-                try{
-                    num2 = Integer.parseInt(arr_num2[0]);
-                    result = potenzieren(num1, num2);
-                } catch (NumberFormatException e) {
-                    num2_double = Double.parseDouble(arr_num2[0]);
-                    result = potenzieren_ungenau(num1, num2_double);
+                if (!(Integer.parseInt(arr_num1[1]) == 0)) {
+                    returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
                 }
+                return interpreter(returner);
             }
 
-            String returner = String.valueOf(result);
+            if (term.contains("*") || term.contains("/")) {
+                String Rechenzeichen = "";
+                if (term.contains("*") && term.contains("/")) {
+                    Rechenzeichen = term.indexOf("*") < term.indexOf("/") ? "*" : "/";
+                } else if (term.contains("*")) {
+                    Rechenzeichen = "*";
+                } else if (term.contains("/")) {
+                    Rechenzeichen = "/";
+                }
+                String[] arr_num1 = num_before(term, Rechenzeichen);
+                String[] arr_num2 = num_after(term, Rechenzeichen);
+                double num1 = Double.parseDouble(arr_num1[0]);
+                double num2 = Double.parseDouble(arr_num2[0]);
+                double result = 0;
+                switch (Rechenzeichen) {
+                    case "*" -> result = multiplizieren(num1, num2);
+                    case "/" -> result = dividieren(num1, num2);
+                }
+                String returner = String.valueOf(result);
+                if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())) {
+                    returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
+                }
+                if (!(Integer.parseInt(arr_num1[1]) == 0)) {
+                    returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
+                }
+                return interpreter(returner);
+            }
+
+            if (term.contains("+") || (term.contains("-") && term.indexOf("-") > 0)) {
+                String Rechenzeichen = "";
+                if (term.contains("+") && term.contains("-")) {
+                    Rechenzeichen = term.indexOf("+") < term.indexOf("-") ? "+" : "-";
+                } else if (term.contains("+")) {
+                    Rechenzeichen = "+";
+                } else if (term.contains("-")) {
+                    Rechenzeichen = "-";
+                }
+                String[] arr_num1 = num_before(term, Rechenzeichen);
+                String[] arr_num2 = num_after(term, Rechenzeichen);
+                double num1 = Double.parseDouble(arr_num1[0]);
+                double num2 = Double.parseDouble(arr_num2[0]);
+                double result = 0;
+                switch (Rechenzeichen) {
+                    case "+" -> result = addieren(num1, num2);
+                    case "-" -> result = subtrahieren(num1, num2);
+                }
+                String returner = String.valueOf(result);
+                if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())) {
+                    returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
+                }
+                if (!(Integer.parseInt(arr_num1[1]) == 0)) {
+                    returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
+                }
+                return interpreter(returner);
+            }
 
 
-            if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
-                returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
-            }
-            if (!(Integer.parseInt(arr_num1[1]) == 0)){
-                returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
-            }
-            return interpreter(returner);
+            return term;
+
+        } catch (NumberFormatException e) {
+            return "Error: Unerwartetes Zahlenformat.\n\n" + e.getMessage();
+        } catch (ArithmeticException e) {
+            return "Error: " + e.getMessage();
+        } catch (Exception e) {
+            return "Error: Unerwarteter Fehler.\n\n" + e.getMessage();
         }
-
-        if (term.contains("*") || term.contains("/")){
-            String Rechenzeichen="";
-            if (term.contains("*") && term.contains("/")){
-                Rechenzeichen  = term.indexOf("*") < term.indexOf("/") ? "*" : "/";
-            } else if (term.contains("*")) {
-                Rechenzeichen = "*";
-            } else if (term.contains("/")) {
-                Rechenzeichen = "/";
-            }
-            String[] arr_num1 = num_before(term, Rechenzeichen);
-            String[] arr_num2 = num_after(term, Rechenzeichen);
-            double num1 = Double.parseDouble(arr_num1[0]);
-            double num2 = Double.parseDouble(arr_num2[0]);
-            double result = 0;
-            switch (Rechenzeichen) {
-                case "*" -> result = multiplizieren(num1, num2);
-                case "/" -> result = dividieren(num1, num2);
-            }
-            String returner = String.valueOf(result);
-            if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
-                returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
-            }
-            if (!(Integer.parseInt(arr_num1[1]) == 0)){
-                returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
-            }
-            return interpreter(returner);
-        }
-
-        if (term.contains("+") || (term.contains("-") && term.indexOf("-") > 0)){
-            String Rechenzeichen="";
-            if (term.contains("+") && term.contains("-")){
-                Rechenzeichen  = term.indexOf("+") < term.indexOf("-") ? "+" : "-";
-            } else if (term.contains("+")) {
-                Rechenzeichen = "+";
-            } else if (term.contains("-")) {
-                Rechenzeichen = "-";
-            }
-            String[] arr_num1 = num_before(term, Rechenzeichen);
-            String[] arr_num2 = num_after(term, Rechenzeichen);
-            double num1 = Double.parseDouble(arr_num1[0]);
-            double num2 = Double.parseDouble(arr_num2[0]);
-            double result = 0;
-            switch (Rechenzeichen) {
-                case "+" -> result = addieren(num1, num2);
-                case "-" -> result = subtrahieren(num1, num2);
-            }
-            String returner = String.valueOf(result);
-            if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
-                returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
-            }
-            if (!(Integer.parseInt(arr_num1[1]) == 0)){
-                returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
-            }
-            return interpreter(returner);
-        }
-
-
-
-
-        return term;
     }
 
 }
