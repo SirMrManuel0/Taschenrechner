@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 
 public class GUI extends JFrame {
@@ -13,14 +15,31 @@ public class GUI extends JFrame {
     private JTextField nField;
     private JTextField mField;
     private JFrame potenzBruch;
+    private int width;
+    private int heigth;
+    private final Color FOREGROUND_COLOR;
+    private final Color BACKGROUND_COLOR;
 
     public GUI() {
         rechner = new Taschenrechner();
         font = new Font("SansSerif", Font.PLAIN, 20);
 
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+        Dimension screenSize = toolkit.getScreenSize();
+
+        int screenWidth = (int) screenSize.getWidth();
+        int screenHeight = (int) screenSize.getHeight();
+
+        heigth = (int)Math.round(screenHeight / 1.7);
+        width = (int)Math.round(screenHeight / 1.8);
+        FOREGROUND_COLOR = Color.WHITE;
+        BACKGROUND_COLOR = Color.BLACK;
+
         setTitle("Taschenrechner");
-        setSize(new Dimension(700, 600));
+        setSize(new Dimension(width, heigth));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBackground(Color.BLACK);
 
         initComponents();
 
@@ -34,8 +53,10 @@ public class GUI extends JFrame {
 
         displayField = new JTextField();
         displayField.setEditable(true);
-        displayField.setPreferredSize(new Dimension(700, 200));
+        displayField.setPreferredSize(new Dimension(width, (int)Math.round(heigth/3)));
         displayField.setFont(font);
+        displayField.setBackground(BACKGROUND_COLOR);
+        displayField.setForeground(FOREGROUND_COLOR);
         panel.add(displayField, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
@@ -52,6 +73,9 @@ public class GUI extends JFrame {
             JButton button = new JButton(label);
             button.addActionListener(new ButtonClickListener());
             button.setFont(font);
+            button.setBackground(BACKGROUND_COLOR);
+            button.setForeground(FOREGROUND_COLOR);
+
             buttonPanel.add(button);
         }
 
@@ -95,11 +119,32 @@ public class GUI extends JFrame {
         JLabel m = new JLabel("m");
 
         potenzBruch = new JFrame("Potenz mit Bruch");
+        potenzBruch.setBackground(BACKGROUND_COLOR);
+        potenzBruch.setForeground(FOREGROUND_COLOR);
 
         panel.setLayout(new GridLayout(4, 2));
 
         nField = new JTextField("2");
         mField = new JTextField("1");
+
+        nField.setForeground(FOREGROUND_COLOR);
+        mField.setForeground(FOREGROUND_COLOR);
+
+        mField.setBackground(BACKGROUND_COLOR);
+        nField.setBackground(BACKGROUND_COLOR);
+
+        n.setBackground(BACKGROUND_COLOR);
+        m.setBackground(BACKGROUND_COLOR);
+
+        n.setForeground(FOREGROUND_COLOR);
+        m.setForeground(FOREGROUND_COLOR);
+
+        okButton.setForeground(FOREGROUND_COLOR);
+        okButton.setBackground(BACKGROUND_COLOR);
+
+        panel.setBackground(BACKGROUND_COLOR);
+        panel.setForeground(FOREGROUND_COLOR);
+
 
         okButton.setFont(font);
         mField.setFont(font);
@@ -121,7 +166,7 @@ public class GUI extends JFrame {
 
 
         potenzBruch.add(panel);
-        potenzBruch.setSize(new Dimension(650, 400));
+        potenzBruch.setSize(new Dimension(width + 50, (int)Math.round(heigth/1.75)));
         potenzBruch.setLocationRelativeTo(null);
         potenzBruch.setVisible(true);
     }
