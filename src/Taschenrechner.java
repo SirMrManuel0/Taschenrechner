@@ -6,23 +6,34 @@ import java.math.RoundingMode;
  */
 
 public class Taschenrechner {
+    // Methode zum Aufteilen einer Dezimalzahl in Vor- und Nachkommastellen
     private int[] split(double num) {
+        // Dezimalzahl in einen String umwandeln
         String str_floaz = Double.toString(num);
+
+        // Ganzzahligen Teil und Nachkommastellen extrahieren
         int int_floaz1 = Integer.parseInt(str_floaz.substring(0, str_floaz.indexOf(".")));
         String str_floaz2 = str_floaz.substring(str_floaz.indexOf(".") + 1);
         int int_floaz2 = 0;
+
+        // Prüfen, ob es mehr als 12 Nachkommastellen gibt
         if (str_floaz2.length() - 1 >= 12){
             int_floaz2 = Integer.parseInt(str_floaz.substring(str_floaz.indexOf(".") + 1, 11));
         } else {
             int_floaz2 = Integer.parseInt(str_floaz.substring(str_floaz.indexOf(".") + 1));
         }
 
+        // Ursprüngliche Länge der Nachkommastellen speichern
         int original_len = str_floaz.substring(str_floaz.indexOf(".") + 1).length();
         if (original_len == 1 && int_floaz2 == 0){
             original_len = 0;
         }
+
+        // Das Ergebnis als Array zurückgeben
         return new int[]{int_floaz1, int_floaz2, original_len};
     }
+
+    // Methode zur Berechnung der Gesamtlänge der Nachkommastellen in einer Zahlenliste
     private int getTotalNumLen(double... numbers) {
         int totalLen = 0;
         for (double num : numbers) {
@@ -30,10 +41,13 @@ public class Taschenrechner {
         }
         return totalLen;
     }
+
+    // Methode zur Kombination von Vor- und Nachkommastellen in eine Dezimalzahl
     private double combine(int num_vor, int num_nach, int num_len) {
         return num_vor + (num_nach / Math.pow(10, num_len));
     }
 
+    // Methode zur Ermittlung der maximalen Anzahl von Nachkommastellen in einer Zahlenliste
     private int getMaxAfterDigit (double... numbers){
         int maxAfterDigit = 0;
 
@@ -46,6 +60,7 @@ public class Taschenrechner {
         return maxAfterDigit;
     }
 
+    // Methode zum Extrahieren der Zahlen vor einem bestimmten Zeichen in einem Term
     private  String[] num_before(String term, String chara){
         String str_num1_temp = "";
         int index = 0;
@@ -79,6 +94,8 @@ public class Taschenrechner {
 
         return returner;
     }
+
+    // Methode zum Extrahieren der Zahlen nach einem bestimmten Zeichen in einem Term
     private  String[] num_after(String term, String chara){
         String str_num2 = "";
         int index = term.length() - 1;
@@ -104,6 +121,7 @@ public class Taschenrechner {
         return returner;
     }
 
+    // Methode zum Extrahieren von Zahlen nach einem Wurzelzeichen (^)
     private String[] num_after_root(String term){
         String chara = "^";
         String str_num2 = "";
@@ -136,6 +154,7 @@ public class Taschenrechner {
         return returner;
     }
 
+    // Methode zur Addition einer Liste von Zahlen
     private double addieren(double... numbers) {
         int sum_vor = 0;
         int sum_nach = 0;
@@ -157,6 +176,8 @@ public class Taschenrechner {
 
         return combine(sum_vor, sum_nach, maxAfterDigit);
     }
+
+    // Methode zur Subtraktion einer Liste von Zahlen
     private double subtrahieren(double... numbers) {
 
         int sum_vor = 0;
@@ -188,6 +209,7 @@ public class Taschenrechner {
         return combine(sum_vor, sum_nach, maxAfterDigit);
     }
 
+    // Methode zur Multiplikation einer Liste von Zahlen
     private double multiplizieren(double... numbers) {
         if (numbers.length == 0) {return 0.0;}
         if (numbers.length == 1) {return numbers[0];}
@@ -215,6 +237,7 @@ public class Taschenrechner {
         return product;
     }
 
+    // Methode zur Division einer Liste von Zahlen
     private double dividieren(double... numbers) {
         if (numbers.length == 0) {
             throw new IllegalArgumentException("Es müssen mindestens zwei Zahlen zum Teilen angegeben werden.");
@@ -254,6 +277,7 @@ public class Taschenrechner {
         return quotient;
     }
 
+    // Methode zur Berechnung einer Potenz
     private double potenzieren(double base, int exponent) {
         int[] base_split = split(base);
         int afterDigits = base_split[2] * exponent;
@@ -262,16 +286,21 @@ public class Taschenrechner {
         result = result / Math.pow(10, afterDigits);
         return result;
     }
+
+    // Methode zur Berechnung einer Wurzel
     private double wurzel(double base, String exponent) {
         String[] arr_exp1 = num_before(exponent, "\\");
         String[] arr_exp2 = num_after(exponent, "\\");
         return Math.pow(base, Double.parseDouble(arr_exp1[0]) / Double.parseDouble(arr_exp2[0]));
     }
 
+    // Methode zur Berechnung einer Potenz (ungenau)
     private  double potenzieren_ungenau(double base, double exponent) {return Math.pow(base, exponent);}
 
+    // Methode zur Interpretation eines mathematischen Terms
     public String interpreter (String term){
         try {
+            // Leerzeichen, Kommata und Zeilenumbrüche aus dem Term entfernen
             term = term.replace(" ", "");
             term = term.replace(",", ".");
             term = term.replace("\n", "");
@@ -285,56 +314,59 @@ public class Taschenrechner {
                 term = term.substring(0, index) + "+" + term.substring(index + 2);
             }
 
-
+            // Falls im Term "E" vorkommt (wissenschaftliche Notation)
             if (term.contains("E")) {
+                // Den Term in zwei Teile aufteilen: vor und nach "E"
                 int index = term.indexOf("E");
                 String[] num_after = num_after(term, "E");
                 int index_num_after = Integer.parseInt(num_after[1]) + 1;
 
+                // Prüfen, ob es Zeichen nach "E" gibt und diese gegebenenfalls entfernen
                 if (index_num_after < term.length()) {
                     term = term.substring(0, index) + term.substring(index_num_after);
                 } else {
                     term = term.substring(0, index);
                 }
 
+                // Falls gewünscht, können Sie hier die wissenschaftliche Notation verarbeiten.
+                // Beachten Sie, dass im ursprünglichen Code ein Abschnitt für BigDecimal-Kalkulationen auskommentiert ist.
 
-                /*
+                // String[] arr_num1 = num_before(term, "E");
+                // String[] arr_num2 = num_after(term, "E");
 
-                String[] arr_num1 = num_before(term, "E");
-                String[] arr_num2 = num_after(term, "E");
+                // double num1_double = Double.parseDouble(arr_num1[0]);
+                // int num2 = Integer.parseInt(arr_num1[1]);
 
-                double num1_double = Double.parseDouble(arr_num1[0]);
-                int num2 = Integer.parseInt(arr_num1[1]);
+                // BigDecimal num1 = BigDecimal.valueOf(num1_double);
 
-                BigDecimal num1 = BigDecimal.valueOf(num1_double);
+                // BigDecimal result;
+                // if (num2 < 0){
+                //     num2 = num2 * -1;
+                //     BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
+                //     result = num1.divide(zehner, 10, RoundingMode.UP);
+                // } else {
+                //     BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
+                //     result = num1.divide(zehner, 10, RoundingMode.UP);
+                // }
 
-                BigDecimal result;
-                if (num2 < 0){
-                    num2 = num2 * -1;
-                    BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
-                    result = num1.divide(zehner, 10, RoundingMode.UP);
-                } else {
-                    BigDecimal zehner = BigDecimal.valueOf(Math.pow(10, num2));
-                    result = num1.divide(zehner, 10, RoundingMode.UP);
-                }
+                // String returner = String.valueOf(result);
+                // if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
+                //     returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
+                // }
+                // if (!(Integer.parseInt(arr_num1[1]) == 0)){
+                //     returner = term.substring(0, Integer.parseInt(arr_num1[1])) + returner;
+                // }
 
+                // return interpreter(returner);
 
-                String returner = String.valueOf(result);
-                if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())){
-                    returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
-                }
-                if (!(Integer.parseInt(arr_num1[1]) == 0)){
-                    returner = term.substring(0, Integer.parseInt(arr_num1[1])) + returner;
-                }
-                return interpreter(returner);
-
-                 */
 
             }
 
+            // Wenn der Term Klammern enthält, diese verarbeiten
             if (term.contains("(")) {
                 if (term.contains(")")) {
 
+                    // Überprüfen, ob ein Multiplikationszeichen "*" vor der Klammer erforderlich ist
                     boolean malVorKlammer = true;
                     char[] zeichenVorKlammer = {'+', '-', '*', '/', '^', '(', '\\'};
 
@@ -352,6 +384,7 @@ public class Taschenrechner {
                     }
 
 
+                    // Je nach Bedingung das Multiplikationszeichen einfügen und den Teil innerhalb der Klammern interpretieren
                     if (malVorKlammer) {
                         term = term.substring(0, term.indexOf("("))
                                 + "*" + interpreter(term.substring(term.indexOf("(") + 1, term.lastIndexOf(")")))
@@ -370,11 +403,14 @@ public class Taschenrechner {
                 throw new ArithmeticException("Die Klammer muss geöffnet werden!");
             }
 
+            // Wenn der Term Potenzierung "^" enthält, diese verarbeiten
             if (term.contains("^")) {
                 String[] arr_num1 = num_before(term, "^");
                 String[] arr_num2 = num_after_root(term);
                 double num1 = Double.parseDouble(arr_num1[0]);
                 double result = 0.0;
+
+                // Überprüfen, ob die Wurzelberechnung erforderlich ist
                 if (Boolean.parseBoolean(arr_num2[2])) {
                     result = wurzel(num1, arr_num2[0]);
                 } else {
@@ -392,16 +428,19 @@ public class Taschenrechner {
 
                 String returner = String.valueOf(result);
 
-
+                // Überprüfen, ob es Zeichen nach der Potenz gibt und diese gegebenenfalls hinzufügen
                 if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())) {
                     returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
                 }
+
+                // Überprüfen, ob es Zeichen vor der Potenz gibt und diese gegebenenfalls hinzufügen
                 if (!(Integer.parseInt(arr_num1[1]) == 0)) {
                     returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
                 }
                 return interpreter(returner);
             }
 
+            // Wenn der Term Multiplikation oder Division enthält, führen Sie die entsprechenden Berechnungen durch
             if (term.contains("*") || term.contains("/")) {
                 String Rechenzeichen = "";
                 if (term.contains("*") && term.contains("/")) {
@@ -411,25 +450,34 @@ public class Taschenrechner {
                 } else if (term.contains("/")) {
                     Rechenzeichen = "/";
                 }
+
                 String[] arr_num1 = num_before(term, Rechenzeichen);
                 String[] arr_num2 = num_after(term, Rechenzeichen);
                 double num1 = Double.parseDouble(arr_num1[0]);
                 double num2 = Double.parseDouble(arr_num2[0]);
                 double result = 0;
+
+                // Führen Sie die Multiplikations- oder Divisionsberechnung durch
                 switch (Rechenzeichen) {
                     case "*" -> result = multiplizieren(num1, num2);
                     case "/" -> result = dividieren(num1, num2);
                 }
+
                 String returner = String.valueOf(result);
+
+                // Wenn der resultierende Wert nicht bis zum Ende des Terms geht, den Rest des Terms anhängen
                 if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())) {
                     returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
                 }
+
+                // Wenn der resultierende Wert nicht am Anfang des Terms steht, den Rest des Terms davor setzen
                 if (!(Integer.parseInt(arr_num1[1]) == 0)) {
                     returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
                 }
                 return interpreter(returner);
             }
 
+            // Wenn der Term Addition oder Subtraktion enthält, führen Sie die entsprechenden Berechnungen durch
             if (term.contains("+") || (term.contains("-") && term.indexOf("-") > 0)) {
                 String Rechenzeichen = "";
                 if (term.contains("+") && term.contains("-")) {
@@ -439,26 +487,34 @@ public class Taschenrechner {
                 } else if (term.contains("-")) {
                     Rechenzeichen = "-";
                 }
+
                 String[] arr_num1 = num_before(term, Rechenzeichen);
                 String[] arr_num2 = num_after(term, Rechenzeichen);
                 double num1 = Double.parseDouble(arr_num1[0]);
                 double num2 = Double.parseDouble(arr_num2[0]);
                 double result = 0;
+
+                // Führen Sie die Addition oder Subtraktionsberechnung durch
                 switch (Rechenzeichen) {
                     case "+" -> result = addieren(num1, num2);
                     case "-" -> result = subtrahieren(num1, num2);
                 }
+
                 String returner = String.valueOf(result);
+
+                // Wenn der resultierende Wert nicht bis zum Ende des Terms geht, den Rest des Terms anhängen
                 if (!(Integer.parseInt(arr_num2[1]) + 1 == term.length())) {
                     returner = returner + term.substring(Integer.parseInt(arr_num2[1]));
                 }
+
+                // Wenn der resultierende Wert nicht am Anfang des Terms steht, den Rest des Terms davor setzen
                 if (!(Integer.parseInt(arr_num1[1]) == 0)) {
                     returner = term.substring(0, Integer.parseInt(arr_num1[1]) + 1) + returner;
                 }
                 return interpreter(returner);
             }
 
-
+            // Wenn keine der oben genannten Bedingungen erfüllt ist, geben Sie den unveränderten Term zurück
             return term;
 
         } catch (NumberFormatException e) {
