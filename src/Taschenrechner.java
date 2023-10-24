@@ -6,7 +6,13 @@ import java.math.RoundingMode;
  */
 
 public class Taschenrechner {
-    // Methode zum Aufteilen einer Dezimalzahl in Vor- und Nachkommastellen
+
+    /**
+     * Teilt eine Dezimalzahl in Vor- und Nachkommastellen auf.
+     *
+     * @param num Die Dezimalzahl, die aufgeteilt werden soll.
+     * @return Ein int-Array mit drei Elementen: [ganzzahliger Teil, Nachkommastellen, ursprüngliche Länge der Nachkommastellen].
+     */
     private int[] split(double num) {
         // Dezimalzahl in einen String umwandeln
         String str_floaz = Double.toString(num);
@@ -33,7 +39,12 @@ public class Taschenrechner {
         return new int[]{int_floaz1, int_floaz2, original_len};
     }
 
-    // Methode zur Berechnung der Gesamtlänge der Nachkommastellen in einer Zahlenliste
+    /**
+     * Berechnet die Gesamtlänge der Nachkommastellen in einer Liste von Dezimalzahlen.
+     *
+     * @param numbers Eine variable Anzahl von Dezimalzahlen.
+     * @return Die Gesamtlänge der Nachkommastellen in der Liste von Zahlen.
+     */
     private int getTotalNumLen(double... numbers) {
         int totalLen = 0;
         for (double num : numbers) {
@@ -42,12 +53,24 @@ public class Taschenrechner {
         return totalLen;
     }
 
-    // Methode zur Kombination von Vor- und Nachkommastellen in eine Dezimalzahl
+    /**
+     * Kombiniert Vor- und Nachkommastellen in eine Dezimalzahl.
+     *
+     * @param num_vor Der ganzzahlige Teil.
+     * @param num_nach Die Nachkommastellen.
+     * @param num_len Die ursprüngliche Länge der Nachkommastellen.
+     * @return Die kombinierte Dezimalzahl.
+     */
     private double combine(int num_vor, int num_nach, int num_len) {
         return num_vor + (num_nach / Math.pow(10, num_len));
     }
 
-    // Methode zur Ermittlung der maximalen Anzahl von Nachkommastellen in einer Zahlenliste
+    /**
+     * Ermittelt die maximale Anzahl von Nachkommastellen in einer Liste von Dezimalzahlen.
+     *
+     * @param numbers Eine variable Anzahl von Dezimalzahlen.
+     * @return Die maximale Anzahl von Nachkommastellen in der Liste von Zahlen.
+     */
     private int getMaxAfterDigit (double... numbers){
         int maxAfterDigit = 0;
 
@@ -60,7 +83,13 @@ public class Taschenrechner {
         return maxAfterDigit;
     }
 
-    // Methode zum Extrahieren der Zahlen vor einem bestimmten Zeichen in einem Term
+    /**
+     * Extrahiert die Zahlen vor einem bestimmten Zeichen in einem Term.
+     *
+     * @param term  Der mathematische Term.
+     * @param chara Das Zeichen, vor dem die Zahlen extrahiert werden sollen.
+     * @return Ein String-Array mit zwei Elementen: [extrahierte Zahlen, Index des Zeichens].
+     */
     private  String[] num_before(String term, String chara){
         String str_num1_temp = "";
         int index = 0;
@@ -95,7 +124,13 @@ public class Taschenrechner {
         return returner;
     }
 
-    // Methode zum Extrahieren der Zahlen nach einem bestimmten Zeichen in einem Term
+    /**
+     * Extrahiert die Zahlen nach einem bestimmten Zeichen in einem Term.
+     *
+     * @param term  Der mathematische Term.
+     * @param chara Das Zeichen, nach dem die Zahlen extrahiert werden sollen.
+     * @return Ein String-Array mit zwei Elementen: [extrahierte Zahlen, Index des Zeichens].
+     */
     private  String[] num_after(String term, String chara){
         String str_num2 = "";
         int index = term.length() - 1;
@@ -121,7 +156,12 @@ public class Taschenrechner {
         return returner;
     }
 
-    // Methode zum Extrahieren von Zahlen nach einem Wurzelzeichen (^)
+    /**
+     * Extrahiert Zahlen nach einem Wurzelzeichen (^) in einem Term.
+     *
+     * @param term Der mathematische Term.
+     * @return Ein String-Array mit drei Elementen: [extrahierte Zahlen, Index des Zeichens, Wurzel vorhanden (true/false)].
+     */
     private String[] num_after_root(String term){
         String chara = "^";
         String str_num2 = "";
@@ -154,7 +194,12 @@ public class Taschenrechner {
         return returner;
     }
 
-    // Methode zur Addition einer Liste von Zahlen
+    /**
+     * Addiert eine Liste von Dezimalzahlen.
+     *
+     * @param numbers Eine Liste von Dezimalzahlen.
+     * @return Das Ergebnis der Addition.
+     */
     private double addieren(double... numbers) {
         int sum_vor = 0;
         int sum_nach = 0;
@@ -177,7 +222,12 @@ public class Taschenrechner {
         return combine(sum_vor, sum_nach, maxAfterDigit);
     }
 
-    // Methode zur Subtraktion einer Liste von Zahlen
+    /**
+     * Subtrahiert eine Liste von Dezimalzahlen.
+     *
+     * @param numbers Eine Liste von Dezimalzahlen.
+     * @return Das Ergebnis der Subtraktion.
+     */
     private double subtrahieren(double... numbers) {
 
         int sum_vor = 0;
@@ -209,7 +259,12 @@ public class Taschenrechner {
         return combine(sum_vor, sum_nach, maxAfterDigit);
     }
 
-    // Methode zur Multiplikation einer Liste von Zahlen
+    /**
+     * Multipliziert eine Liste von Dezimalzahlen.
+     *
+     * @param numbers Eine Liste von Dezimalzahlen.
+     * @return Das Ergebnis der Multiplikation.
+     */
     private double multiplizieren(double... numbers) {
         if (numbers.length == 0) {return 0.0;}
         if (numbers.length == 1) {return numbers[0];}
@@ -237,7 +292,14 @@ public class Taschenrechner {
         return product;
     }
 
-    // Methode zur Division einer Liste von Zahlen
+    /**
+     * Dividiert eine Liste von Dezimalzahlen.
+     *
+     * @param numbers Eine Liste von Dezimalzahlen.
+     * @return Das Ergebnis der Division.
+     * @throws IllegalArgumentException Wenn weniger als zwei Zahlen zum Teilen angegeben werden.
+     * @throws ArithmeticException     Wenn durch Null geteilt wird.
+     */
     private double dividieren(double... numbers) {
         if (numbers.length == 0) {
             throw new IllegalArgumentException("Es müssen mindestens zwei Zahlen zum Teilen angegeben werden.");
@@ -277,7 +339,13 @@ public class Taschenrechner {
         return quotient;
     }
 
-    // Methode zur Berechnung einer Potenz
+    /**
+     * Berechnet eine Potenz.
+     *
+     * @param base     Die Basis der Potenz.
+     * @param exponent Der Exponent der Potenz.
+     * @return Das Ergebnis der Potenzierung.
+     */
     private double potenzieren(double base, int exponent) {
         int[] base_split = split(base);
         int afterDigits = base_split[2] * exponent;
@@ -287,17 +355,37 @@ public class Taschenrechner {
         return result;
     }
 
-    // Methode zur Berechnung einer Wurzel
+    /**
+     * Berechnet eine Wurzel.
+     *
+     * @param base     Die Basis der Wurzel.
+     * @param exponent Der Exponent, der angibt, welche Wurzel berechnet werden soll.
+     * @return Das Ergebnis der Wurzelberechnung.
+     */
     private double wurzel(double base, String exponent) {
         String[] arr_exp1 = num_before(exponent, "\\");
         String[] arr_exp2 = num_after(exponent, "\\");
         return Math.pow(base, Double.parseDouble(arr_exp1[0]) / Double.parseDouble(arr_exp2[0]));
     }
 
-    // Methode zur Berechnung einer Potenz (ungenau)
+    /**
+     * Berechnet eine Potenz (ungenau).
+     *
+     * @param base     Die Basis der Potenz.
+     * @param exponent Der Exponent der Potenz.
+     * @return Das ungenaue Ergebnis der Potenzierung.
+     */
     private  double potenzieren_ungenau(double base, double exponent) {return Math.pow(base, exponent);}
 
-    // Methode zur Interpretation eines mathematischen Terms
+    /**
+     * Methode zur Interpretation eines mathematischen Terms.
+     *
+     * @param term Der zu interpretierende mathematische Ausdruck als Zeichenkette.
+     * @return Das Ergebnis der Interpretation des Ausdrucks als Zeichenkette oder eine Fehlermeldung.
+     * @throws NumberFormatException Wenn ein unerwartetes Zahlenformat auftritt.
+     * @throws ArithmeticException Wenn es ein Problem mit der Klammerung im Ausdruck gibt.
+     * @throws Exception Wenn ein unerwarteter Fehler auftritt.
+     */
     public String interpreter (String term){
         try {
             // Leerzeichen, Kommata und Zeilenumbrüche aus dem Term entfernen

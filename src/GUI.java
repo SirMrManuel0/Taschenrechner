@@ -7,6 +7,9 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 
+/**
+ * This class represents a graphical user interface for a calculator application.
+ */
 public class GUI extends JFrame {
 
     private JTextField displayField;
@@ -20,6 +23,11 @@ public class GUI extends JFrame {
     private final Color FOREGROUND_COLOR;
     private final Color BACKGROUND_COLOR;
 
+
+    /**
+     * Constructor for the GUI class.
+     * Initializes the calculator and sets up the GUI.
+     */
     public GUI() {
         // Initialisierung des Taschenrechners und anderer GUI-Komponenten
         rechner = new Taschenrechner();
@@ -48,7 +56,9 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    // Initialisierung der GUI-Komponenten
+    /**
+     * Initializes the components of the GUI.
+     */
     private void initComponents() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -89,7 +99,9 @@ public class GUI extends JFrame {
         add(panel);
     }
 
-    // ActionListener für Schaltflächen
+    /**
+     * ActionListener for buttons in the GUI.
+     */
     private class ButtonClickListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             JButton source = (JButton) e.getSource();
@@ -116,7 +128,9 @@ public class GUI extends JFrame {
         }
     }
 
-    // Methode zur Anzeige des Bruchpotenz-Fensters
+    /**
+     * Displays a dialog for entering a power with a fraction.
+     */
     private void potenzBruch() {
         // Ein neues Panel für das Potenz-Bruch-Fenster erstellen
         JPanel panel = new JPanel();
